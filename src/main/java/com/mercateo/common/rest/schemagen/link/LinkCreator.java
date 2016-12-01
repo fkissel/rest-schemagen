@@ -63,13 +63,23 @@ public class LinkCreator {
      * @param scopes   list of Scope objects for every scope level
      * @param relation relation of method
      * @return link with schema if applicable
+     * 
+     * @deprecated use {@link #createFor(URI, List, Relation)} instead
      */
-
+    @Deprecated
     public Link createFor(List<Scope> scopes, Relation relation) {
         final URI baseUri = linkFactoryContext.getBaseUri();
         return createFor(baseUri, scopes, relation);
     }
 
+    /**
+     * create a link for a resource method
+     *
+     * @param scopes   list of Scope objects for every scope level
+     * @param relation relation of method
+     * @param baseUri the base URI for resolution of relative URIs
+     * @return link with schema if applicable
+     */
     public Link createFor(URI baseUri, List<Scope> scopes, Relation relation) {
         final Class<?> resourceClass = scopes.get(0).getInvokedClass();
         UriBuilder uriBuilder = UriBuilder.fromResource(resourceClass);
