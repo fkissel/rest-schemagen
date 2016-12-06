@@ -68,8 +68,7 @@ public class LinkCreator {
      */
     @Deprecated
     public Link createFor(List<Scope> scopes, Relation relation) {
-        final URI baseUri = linkFactoryContext.getBaseUri();
-        return createFor(baseUri, scopes, relation);
+        return createFor(requireNonNull(linkFactoryContext.getBaseUri()), scopes, relation);
     }
 
     /**
@@ -133,7 +132,7 @@ public class LinkCreator {
     private Map<String, Object> collectPathParameters(Scope scope,
                                                       Object[] parameters) {
         final Map<String, Object> pathParameters = new HashMap<>();
-        visitAnnotations((parameter, parameterIndex, annotation) -> {
+        visitAnnotations((Object parameter, int parameterIndex, Annotation annotation) -> {
             if (annotation instanceof PathParam) {
                 PathParam pathParamAnnotation = (PathParam) annotation;
                 pathParameters.put(pathParamAnnotation.value(), parameter);

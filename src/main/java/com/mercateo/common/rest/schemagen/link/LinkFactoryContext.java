@@ -21,10 +21,9 @@ public class LinkFactoryContext {
             MethodCheckerForLink methodCheckerForLink,
             FieldCheckerForSchema fieldCheckerForSchema) {
         this.schemaGenerator = checkNotNull(schemaGenerator);
-        this.baseUri = checkNotNull(baseUri);
+        this.baseUri = baseUri;
         this.methodCheckerForLink = checkNotNull(methodCheckerForLink);
         this.fieldCheckerForSchema = checkNotNull(fieldCheckerForSchema);
-
     }
 
     public JsonSchemaGenerator getSchemaGenerator() {

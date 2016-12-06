@@ -54,9 +54,9 @@ public class LinkCreatorTest {
     @Test
     public void testPOSTWithBaseURI() throws NoSuchMethodException, SecurityException {
         Link link = createFor(ResourceClass.class, ResourceClass.class.getMethod("postSomething",
-                Something.class), Relation.of(Rel.SELF), URI.create("http://localhost:8080/"));
+                Something.class), Relation.of(Rel.SELF), URI.create("http://localhost:8080/path/"));
 
-        assertEquals("http://localhost:8080/resource/method", link.getUri().toString());
+        assertEquals("http://localhost:8080/path/resource/method", link.getUri().toString());
         assertEquals("POST", link.getParams().get("method"));
         assertEquals(testSchema, link.getParams().get("schema"));
     }
@@ -166,10 +166,10 @@ public class LinkCreatorTest {
         final JsonSchemaGenerator jsonSchemaGenerator = createJsonSchemaGenerator();
 
         final LinkFactoryContext linkFactoryContext = new LinkFactoryContext(jsonSchemaGenerator,
-                baseURI, o -> true, (o, c) -> true);
+                null, o -> true, (o, c) -> true);
         final LinkCreator linkCreator = new LinkCreator(linkFactoryContext);
 
-        return linkCreator.createFor(Collections.singletonList(method), relation);
+        return linkCreator.createFor(baseURI, Collections.singletonList(method), relation);
     }
 
 }
