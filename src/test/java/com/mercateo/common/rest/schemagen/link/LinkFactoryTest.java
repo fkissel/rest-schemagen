@@ -16,6 +16,8 @@ import java.util.Optional;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.SecurityContext;
 
+import com.mercateo.common.rest.schemagen.link.relation.Relation;
+import com.mercateo.common.rest.schemagen.link.relation.RelationContainer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +47,15 @@ public class LinkFactoryTest {
 
     private LinkMetaFactory linkMetaFactory;
 
+    enum OwnRel implements RelationContainer {
+        TEST;
+
+        @Override
+        public Relation getRelation() {
+            return Relation.of(name().toLowerCase());
+        }
+    }
+
     @Before
     public void setUp() throws URISyntaxException {
         baseUri = new URI("basePath/");
@@ -56,7 +67,7 @@ public class LinkFactoryTest {
     @Test
     public void fieldIsNotInTargetSchema() {
         allowRole("test");
-        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(Rel.SELF, r -> r
+        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(baseUri, Rel.SELF, r -> r
                 .getSomething("12")).get();
         assertNull(link.getParams().get("targetSchema"));
     }
@@ -74,7 +85,7 @@ public class LinkFactoryTest {
 
     @Test
     public void fieldIsNotInSchema() {
-        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(Rel.SELF, r -> r
+        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(baseUri, Rel.SELF, r -> r
                 .postSomething(null)).get();
         assertNull(link.getParams().get("schema"));
     }
@@ -83,7 +94,7 @@ public class LinkFactoryTest {
     public void fieldInSchema() throws NoSuchFieldException, SecurityException {
         when(fieldCheckerForSchema.test(eq(Something.class.getDeclaredField("id")), any()))
                 .thenReturn(Boolean.TRUE);
-        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(Rel.SELF, r -> r
+        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(baseUri, Rel.SELF, r -> r
                 .postSomething(null)).get();
         assertEquals("{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}}}", link
                 .getParams().get("schema"));
@@ -101,7 +112,7 @@ public class LinkFactoryTest {
     @Test
     public void testCorrectLinkGenerationGETArray() {
         allowRole("test");
-        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(Rel.SELF, r -> r
+        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(baseUri, OwnRel.TEST, r -> r
                 .getSomethingArray("12")).get();
         assertEquals("basePath/resource/methods/12", link.getUri().toString());
         assertEquals("GET", link.getParams().get("method"));
@@ -109,7 +120,7 @@ public class LinkFactoryTest {
 
     @Test
     public void testCorrectLinkGenerationPOST() {
-        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(Rel.SELF, r -> r
+        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(OwnRel.TEST, r -> r
                 .postSomething(null)).get();
         assertEquals("basePath/resource/method", link.getUri().toString());
         assertEquals("POST", link.getParams().get("method"));
@@ -117,7 +128,7 @@ public class LinkFactoryTest {
 
     @Test
     public void testCorrectLinkGenerationPOSTWithParam() {
-        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(Rel.SELF, r -> r
+        Link link = linkMetaFactory.createFactoryFor(ResourceClass.class).forCall(baseUri, Rel.SELF, r -> r
                 .postSomethingWithId("12", 100)).get();
         assertEquals("basePath/resource/method/12?limit=100", link.getUri().toString());
         assertEquals("POST", link.getParams().get("method"));
@@ -137,7 +148,7 @@ public class LinkFactoryTest {
 
         Optional<Link> linkOption = linkMetaFactory.createFactoryFor(ParentResourceClass.class)
                 .subResource(ParentResourceClass::getSubResource, ResourceClass.class).forCall(
-                        Rel.SELF, r -> r.getSomething("12"));
+                        baseUri, Rel.SELF, r -> r.getSomething("12"));
 
         assertTrue(linkOption.isPresent());
         assertEquals("basePath/parentResource/subresource/method/12", linkOption.get().getUri()
@@ -150,7 +161,7 @@ public class LinkFactoryTest {
 
         Optional<Link> linkOption = linkMetaFactory.createFactoryFor(ParentResourceClass.class)
                 .subResource(ParentResourceClass::getSubResourceForIdInParentResource,
-                        ResourceClass.class).forCall(Rel.SELF, r -> r.getTwoIds("1", "2"));
+                        ResourceClass.class).forCall(baseUri, Rel.SELF, r -> r.getTwoIds("1", "2"));
 
         assertTrue(linkOption.isPresent());
         assertEquals("basePath/parentResource/1/subresource/2", linkOption.get().getUri()
@@ -165,7 +176,7 @@ public class LinkFactoryTest {
         final Optional<Link> linkOption = linkMetaFactory.createFactoryFor(
                 ParentResourceClass.class).subResource(ParentResourceClass::getSubResource,
                         ResourceClass.class).subResource(ResourceClass::getChildResource,
-                                ChildResourceClass.class).forCall(Rel.SELF, r -> r
+                                ChildResourceClass.class).forCall(baseUri, Rel.SELF, r -> r
                                         .getSomethingArray("14"));
 
         assertTrue(linkOption.isPresent());

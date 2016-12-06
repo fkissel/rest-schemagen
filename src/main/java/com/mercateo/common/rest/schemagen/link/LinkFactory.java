@@ -37,12 +37,10 @@ public class LinkFactory<T extends JerseyResource> {
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
      *
-     * @param rel
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
+     * @param rel              relation of link
+     * @param methodInvocation lambda with function call
      * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
+     * permission to call the resource!
      */
     public Optional<Link> forCall(URI baseUri, RelationContainer rel, MethodInvocation<T> methodInvocation) {
         return forCall(baseUri, rel.getRelation(), methodInvocation);
@@ -52,13 +50,10 @@ public class LinkFactory<T extends JerseyResource> {
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
      *
-     * @param rel
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
+     * @param rel              relation of link
+     * @param methodInvocation lambda with function call
      * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
-     *
+     * permission to call the resource!
      * @deprecated use {{@link #forCall(URI, RelationContainer, MethodInvocation)}} instead
      */
     @Deprecated
@@ -70,15 +65,12 @@ public class LinkFactory<T extends JerseyResource> {
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
      *
-     * @param rel
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
-     * @param callContext
-     *            parameter container containing information about allowed and
-     *            default values
+     * @param rel              relation of link
+     * @param methodInvocation lambda with function call
+     * @param callContext      parameter container containing information about allowed and
+     *                         default values
      * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
+     * permission to call the resource!
      */
     public Optional<Link> forCall(URI baseUri, RelationContainer rel, MethodInvocation<T> methodInvocation,
                                   CallContext callContext) {
@@ -89,21 +81,17 @@ public class LinkFactory<T extends JerseyResource> {
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
      *
-     * @param rel
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
-     * @param callContext
-     *            parameter container containing information about allowed and
-     *            default values
+     * @param rel              relation of link
+     * @param methodInvocation lambda with function call
+     * @param callContext      parameter container containing information about allowed and
+     *                         default values
      * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
-     *
-     *  @deprecated use {{@link #forCall(URI, RelationContainer, MethodInvocation, CallContext)}} instead
+     * permission to call the resource!
+     * @deprecated use {{@link #forCall(URI, RelationContainer, MethodInvocation, CallContext)}} instead
      */
     @Deprecated
     public Optional<Link> forCall(RelationContainer rel, MethodInvocation<T> methodInvocation,
-            CallContext callContext) {
+                                  CallContext callContext) {
         return forCall(rel.getRelation(), methodInvocation, callContext);
     }
 
@@ -111,12 +99,10 @@ public class LinkFactory<T extends JerseyResource> {
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
      *
-     * @param relation
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
+     * @param relation         relation of link
+     * @param methodInvocation lambda with function call
      * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
+     * permission to call the resource!
      */
     public Optional<Link> forCall(URI baseUri, Relation relation, MethodInvocation<T> methodInvocation) {
         return forCall(baseUri, relation, methodInvocation, Parameter.createContext());
@@ -126,13 +112,10 @@ public class LinkFactory<T extends JerseyResource> {
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
      *
-     * @param relation
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
+     * @param relation         relation of link
+     * @param methodInvocation lambda with function call
      * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
-     *
+     * permission to call the resource!
      * @deprecated use {{@link #forCall(URI, Relation, MethodInvocation)}} instead
      */
     @Deprecated
@@ -143,22 +126,18 @@ public class LinkFactory<T extends JerseyResource> {
     /**
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
-     * 
-     * @param relation
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
-     * @param callContext
-     *            parameter container containing information about allowed and
-     *            default values
-     * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
      *
+     * @param relation         relation of link
+     * @param methodInvocation lambda with function call
+     * @param callContext      parameter container containing information about allowed and
+     *                         default values
+     * @return the specified link or absent, if the user has not the required
+     * permission to call the resource!
      * @deprecated use {{@link #forCall(URI, Relation, MethodInvocation, CallContext)}} instead
      */
     @Deprecated
     public Optional<Link> forCall(Relation relation, MethodInvocation<T> methodInvocation,
-            CallContext callContext) {
+                                  CallContext callContext) {
         final List<Scope> scopes = createScopes(methodInvocation, callContext);
 
         if (scopes.stream().allMatch(this::hasAllPermissions)) {
@@ -171,15 +150,12 @@ public class LinkFactory<T extends JerseyResource> {
      * computes the link for the resource method, which is called the last time
      * in the lambda. Please note, that the method has to be non final!
      *
-     * @param relation
-     *            relation of link
-     * @param methodInvocation
-     *            lambda with function call
-     * @param callContext
-     *            parameter container containing information about allowed and
-     *            default values
+     * @param relation         relation of link
+     * @param methodInvocation lambda with function call
+     * @param callContext      parameter container containing information about allowed and
+     *                         default values
      * @return the specified link or absent, if the user has not the required
-     *         permission to call the resource!
+     * permission to call the resource!
      */
     public Optional<Link> forCall(URI baseUri, Relation relation, MethodInvocation<T> methodInvocation,
                                   CallContext callContext) {
@@ -201,6 +177,7 @@ public class LinkFactory<T extends JerseyResource> {
             MethodInvocation<T> methodInvocation, Class<U> subResourceClass) {
         return new LinkFactory<>(subResourceClass, context, new ArrayList<Scope>(scopes) {
             private static final long serialVersionUID = -9144825887185625018L;
+
             {
                 add(createSubresourceScope(methodInvocation));
             }
