@@ -1,6 +1,7 @@
 # rest-schemagen
 [![Build Status](https://travis-ci.org/Mercateo/rest-schemagen.svg?branch=master)](https://travis-ci.org/Mercateo/rest-schemagen)
 [![Coverage Status](https://coveralls.io/repos/Mercateo/rest-schemagen/badge.svg?branch=master&service=github)](https://coveralls.io/github/Mercateo/rest-schemagen?branch=master)
+[![MavenCentral](https://img.shields.io/maven-central/v/com.mercateo/common.rest.schemagen.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.mercateo%22%20AND%20a%3A%22common.rest.schemagen%22)
 
 
 Jersey add-on for dynamic link and schema building.
@@ -10,9 +11,7 @@ It also works for reverse proxies (like jetty behind apache/nginx)
 
 
 # Quick start
-You can find the latest artifact on [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22common.rest.schemagen%22).
-
-In your jersey configuration simply type:
+In your jersey configuration simply include:
 ```java
 LinkFactoryResourceConfig.configure(rs); 
 ```
@@ -88,7 +87,7 @@ There is a way to manipulate allowed and default values. The central class is Ca
 ```java
 Optional<Link> link = Optional.empty();
  
-final Parameter.Context context = Parameter.createContext();
+final CallContext context = Parameter.createContext();
  
 final Parameter.Builder<AddressJson> addressJsonBuilder = context.builderFor(AddressJson.class) //
         .allowValues(getAllowedAddressTypes());
@@ -139,5 +138,9 @@ public enum OwnRel implements RelationContainer {
 }
 ```
 
-# Example
-A simple example project can be found [here](https://github.com/TNG/rest-demo-jersey).
+# Examples 
+* [example with roles](https://github.com/TNG/rest-demo-jersey)
+* [example with feature toggles](https://github.com/Mercateo/rest-demo-feature)
+
+#Troubleshooting import in IDEs
+If you have compile errors using an IDE, it is most likely because of immutables. Please refer to the immutables [help page](https://immutables.github.io/apt.html). Keep in mind to choose the right package version of the value-jar.  
