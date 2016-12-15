@@ -95,7 +95,7 @@ public class LinkCreator {
             setQueryParameters(uriBuilder, scope, parameters);
         }
 
-        final URI uri = uriBuilder.buildFromMap(pathParameters);
+        URI uri = mergeUri(baseUri, uriBuilder, pathParameters);
 
         Builder builder = setRelation(relation, uri);
 
@@ -106,10 +106,20 @@ public class LinkCreator {
         final Scope lastScopedMethod = Iterables.getLast(scopes);
         addHttpMethod(builder, lastScopedMethod);
         addSchemaIfNeeded(builder, lastScopedMethod);
-        if (baseUri != null) {
-            builder.baseUri(baseUri);
-        }
         return builder.build();
+    }
+
+    private URI mergeUri(URI baseUri, UriBuilder uriBuilder, Map<String, Object> pathParameters) {
+        URI uri = uriBuilder.buildFromMap(pathParameters);
+
+        if (baseUri != null) {
+            UriBuilder mergedUriBuilder = UriBuilder.fromUri(baseUri);
+            mergedUriBuilder.path(uri.getPath());
+            mergedUriBuilder.replaceQuery(uri.getQuery());
+            return mergedUriBuilder.buildFromMap(pathParameters);
+        }
+
+        return uri;
     }
 
     private void addLinkProperties(List<Scope> scopes, Builder builder) {
@@ -137,11 +147,7 @@ public class LinkCreator {
             if (annotation instanceof PathParam) {
                 PathParam pathParamAnnotation = (PathParam) annotation;
                 String paramName = pathParamAnnotation.value();
-                if(parameter != null) {
-                	pathParameters.put(paramName, parameter);
-                } else {
-                	pathParameters.put(paramName, "{" + paramName + "}");
-                }
+                pathParameters.put(paramName, parameter != null ? parameter : "{" + paramName + "}");
             } else if (annotation instanceof BeanParam) {
                 BeanParamExtractor beanParamExtractor = new BeanParamExtractor();
                 pathParameters.putAll(beanParamExtractor.getPathParameters(parameter));
@@ -190,15 +196,11 @@ public class LinkCreator {
         final JsonSchemaGenerator schemaGenerator = linkFactoryContext.getSchemaGenerator();
         Optional<String> optionalInputSchema = schemaGenerator.createInputSchema(method,
                 linkFactoryContext.getFieldCheckerForSchema());
-        if (optionalInputSchema.isPresent()) {
-            builder.param(SCHEMA_PARAM_KEY, optionalInputSchema.get());
-        }
+        optionalInputSchema.ifPresent(s -> builder.param(SCHEMA_PARAM_KEY, s));
 
         Optional<String> optionalOutputSchema = schemaGenerator.createOutputSchema(method,
                 linkFactoryContext.getFieldCheckerForSchema());
-        if (optionalOutputSchema.isPresent()) {
-            builder.param(TARGET_SCHEMA_PARAM_KEY, optionalOutputSchema.get());
-        }
+        optionalOutputSchema.ifPresent(s -> builder.param(TARGET_SCHEMA_PARAM_KEY, s));
     }
 
 }

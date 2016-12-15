@@ -96,49 +96,49 @@ public class LinkCreatorTest {
         assertEquals("http://localhost:8080/test/path?qp2=v2&qp1=v1", link.getUri().toString());
         assertEquals("GET", link.getParams().get("method"));
     }
-    
+
     @Test
     public void testPathParam() throws NoSuchMethodException, SecurityException {
-		@Path("test")
-		class ImplementedGenricResource {
-			@GET
-			@Path("{pathParam1}")
-			@Produces("application/json")
-			public String get(@PathParam("pathParam1") String param) {
-				return "input:" + param;
-			}
-		}
-    	
-    	Scope scope = new CallScope(ImplementedGenricResource.class, ImplementedGenricResource.class.getMethod("get",
-    			String.class), new String[] { "foo" }, null);
-    	
-    	Link link = createFor(scope, Relation.of(Rel.SELF), URI.create(
-    			"http://localhost:8080/"));
-    	
-    	assertEquals("http://localhost:8080/test/foo", link.getUri().toString());
-    	assertEquals("GET", link.getParams().get("method"));
+        @Path("test")
+        class ImplementedGenricResource {
+            @GET
+            @Path("{pathParam1}")
+            @Produces("application/json")
+            public String get(@PathParam("pathParam1") String param) {
+                return "input:" + param;
+            }
+        }
+
+        Scope scope = new CallScope(ImplementedGenricResource.class, ImplementedGenricResource.class.getMethod("get",
+                String.class), new String[]{"foo"}, null);
+
+        Link link = createFor(scope, Relation.of(Rel.SELF), URI.create(
+                "http://localhost:8080/"));
+
+        assertEquals("http://localhost:8080/test/foo", link.getUri().toString());
+        assertEquals("GET", link.getParams().get("method"));
     }
-    
+
     @Test
     public void testTemplatedPathParam() throws NoSuchMethodException, SecurityException {
-    	@Path("test")
-    	class ImplementedGenricResource {
-    		@GET
-    		@Path("{pathParam1}")
-    		@Produces("application/json")
-    		public String get(@PathParam("pathParam1") String param) {
-    			return "input:" + param;
-    		}
-    	}
-    	
-    	Scope scope = new CallScope(ImplementedGenricResource.class, ImplementedGenricResource.class.getMethod("get",
-    			String.class), new String[] { null }, null);
-    	
-    	Link link = createFor(scope, Relation.of(Rel.SELF), URI.create(
-    			"http://localhost:8080/"));
-    	
-    	assertEquals("http://localhost:8080/test/%7BpathParam1%7D", link.getUri().toString());
-    	assertEquals("GET", link.getParams().get("method"));
+        @Path("test")
+        class ImplementedGenricResource {
+            @GET
+            @Path("{pathParam1}")
+            @Produces("application/json")
+            public String get(@PathParam("pathParam1") String param) {
+                return "input:" + param;
+            }
+        }
+
+        Scope scope = new CallScope(ImplementedGenricResource.class, ImplementedGenricResource.class.getMethod("get",
+                String.class), new String[]{null}, null);
+
+        Link link = createFor(scope, Relation.of(Rel.SELF), URI.create(
+                "http://localhost:8080/"));
+
+        assertEquals("http://localhost:8080/test/%7BpathParam1%7D", link.getUri().toString());
+        assertEquals("GET", link.getParams().get("method"));
     }
 
     @Test
